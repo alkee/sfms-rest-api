@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sfms-rest-api", "sfms-rest-api\sfms-rest-api.csproj", "{38FF0BAB-A093-4B92-BF4C-D98C6CBC0325}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sample-service", "sample-service\sample-service.csproj", "{23AAA475-92C5-4D8B-8627-FA7906247D2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sfms-api-test", "sfms-api-test\sfms-api-test.csproj", "{534E5083-840F-4C22-8F08-58F0C031D2FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38FF0BAB-A093-4B92-BF4C-D98C6CBC0325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38FF0BAB-A093-4B92-BF4C-D98C6CBC0325}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38FF0BAB-A093-4B92-BF4C-D98C6CBC0325}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38FF0BAB-A093-4B92-BF4C-D98C6CBC0325}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23AAA475-92C5-4D8B-8627-FA7906247D2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23AAA475-92C5-4D8B-8627-FA7906247D2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23AAA475-92C5-4D8B-8627-FA7906247D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23AAA475-92C5-4D8B-8627-FA7906247D2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{534E5083-840F-4C22-8F08-58F0C031D2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{534E5083-840F-4C22-8F08-58F0C031D2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{534E5083-840F-4C22-8F08-58F0C031D2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{534E5083-840F-4C22-8F08-58F0C031D2FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
