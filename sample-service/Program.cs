@@ -1,25 +1,49 @@
+using sfms_rest_api;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// IMvcBuilder chain
+builder.Services
+    // to register controllers on this assembly
+    .AddControllers()
+    // to register SfmsController
+    .AddSmfsController();
+
+// sfms dependent resource
+const string DATA_DIR = "data";
+if (Directory.Exists(DATA_DIR) == false)
+{
+    Directory.CreateDirectory(DATA_DIR);
+}
+const string DB_FILE = "container.db";
+builder.Services
+    .AddSingleton(new sfms.Container($"{DATA_DIR}/${DB_FILE}"));
+
+// IServiceCollection chain
+builder.Services
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen();
 
 var app = builder.Build();
+
+// IEndpointRouteBuilder chain
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app
+        .UseSwagger()
+        .UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// IApplicationBuilder chain
+app
+    .UseHttpsRedirection()
+    .UseAuthorization();
 
-app.UseAuthorization();
-
-app.MapControllers();
-
+// WebApplication chain
 app.Run();
