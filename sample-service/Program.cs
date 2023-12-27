@@ -25,7 +25,15 @@ builder.Services
 builder.Services
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     .AddEndpointsApiExplorer()
-    .AddSwaggerGen();
+    .AddSwaggerGen(o =>
+    {
+        // GenerateDocumentationFile 설정(.csproj)을 이용해 UI 에 반영
+        var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        if (File.Exists(xmlFilename))
+        {
+            o.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+        }
+    });
 
 var app = builder.Build();
 
