@@ -63,25 +63,15 @@ public class SfmsController
         return Ok(await container.MoveAsync(filePath, newFilePath));
     }
 
-    [HttpPost("File/{**filePath}")]
-    public async Task<IActionResult> TouchFile(string filePath)
-    {
-        filePath = MakeSureValidPath(filePath, true);
-        return Ok(await container.TouchAsync(filePath));
-    }
-
     [HttpPost("FileContent/{**filePath}")]
     public async Task<IActionResult> WriteFile(string filePath, string originalFileName = "", string base64encodedBytes = "")
     {
         filePath = MakeSureValidPath(filePath, true);
-
-        if (string.IsNullOrWhiteSpace(base64encodedBytes))
-            return Ok(await container.TouchAsync(filePath));
-
         if (string.IsNullOrWhiteSpace(originalFileName))
         {
             originalFileName = GetFileName(filePath);
         }
+
         var decoded = Convert.FromBase64String(base64encodedBytes);
         var stream = new MemoryStream(decoded);
         return Ok(await WriteFile(filePath, originalFileName, stream));
@@ -95,25 +85,9 @@ public class SfmsController
         string filePath,
         IFormFile uploadFile)
     {
-        var file = await WriteFile(filePath, uploadFile.FileName, uploadFile.OpenReadStream());
+        var stream = uploadFile.OpenReadStream();
+        var file = await WriteFile(filePath, uploadFile.FileName, stream);
         return Ok(file);
-    }
-
-    [HttpGet("Webform/FileContent/{**filePath}")]
-    public async Task<FileResult> DownloadFile(string filePath, bool asOriginalFileName = true)
-    {
-        filePath = MakeSureValidPath(filePath, true);
-        var file = await container.GetFileAsync(filePath)
-            ?? throw new NotFoundException($"file not found : {filePath}");
-        var meta = FileMeta.FromJson(file.meta);
-        var fileName = string.IsNullOrWhiteSpace(meta.OriginalFileName) && asOriginalFileName == false
-            ? GetFileName(filePath)
-            : meta.OriginalFileName;
-        var content = await container.ReadFileAsync(file);
-        return File(
-            content.data,
-            System.Net.Mime.MediaTypeNames.Application.Octet,
-            fileName);
     }
 
     [HttpGet("FileContent/{**filePath}")]
@@ -126,11 +100,32 @@ public class SfmsController
         return Ok(content);
     }
 
+    [HttpGet("Webform/FileContent/{**filePath}")]
+    public async Task<IActionResult> DownloadFile(string filePath, bool asOriginalFileName = true)
+    {
+        filePath = MakeSureValidPath(filePath, true);
+        var file = await container.GetFileAsync(filePath)
+            ?? throw new NotFoundException($"file not found : {filePath}");
+        var meta = FileMeta.FromJson(file.meta);
+        var fileName = string.IsNullOrWhiteSpace(meta.OriginalFileName) && asOriginalFileName == false
+            ? GetFileName(filePath)
+            : meta.OriginalFileName;
+        var content = await container.ReadFileAsync(file);
+        // TODO: 확장자에 따른 Mime Type
+        return File(
+            content.data,
+            System.Net.Mime.MediaTypeNames.Application.Octet,
+            fileName);
+    }
+
     #region internal helpers
 
     private async Task<sfms.File> WriteFile(string filePath, string originalFileName, Stream stream)
-    {
+    { // overwrite not allowed !!!
         filePath = MakeSureValidPath(filePath, true);
+        if (container.GetFile(filePath) != null)
+            throw new AlreadyExistsException($"file already exists : {filePath}");
+
         var file = await container.WriteFileAsync(filePath, stream);
         if (string.IsNullOrWhiteSpace(originalFileName) == false)
         {
